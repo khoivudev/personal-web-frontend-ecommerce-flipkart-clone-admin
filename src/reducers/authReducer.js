@@ -11,6 +11,8 @@ const inititalState = {
   authenticate: false,
   authenticating: false,
   error: "",
+  loading: false,
+  message: "",
 };
 
 export default function (state = inititalState, action) {
@@ -19,6 +21,7 @@ export default function (state = inititalState, action) {
       return {
         ...state,
         authenticating: true,
+        loading: true,
       };
     case authTypes.LOGIN_SUCCESS:
       return {
@@ -27,16 +30,30 @@ export default function (state = inititalState, action) {
         token: action.payload.token,
         authenticate: true,
         authenticating: false,
+        loading: false,
       };
     case authTypes.LOGIN_FAILURE:
       return {
         ...state,
         authenticating: false,
+        loading: false,
         error: action.payload.error,
       };
     case authTypes.LOGOUT_REQUEST:
-      return inititalState;
-
+      return {
+        ...state,
+        loading: true,
+      };
+    case authTypes.LOGOUT_SUCCESS:
+      return {
+        ...inititalState,
+        loading: false,
+      };
+    case authTypes.LOGOUT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      };
     default:
       return state;
   }

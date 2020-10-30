@@ -51,8 +51,32 @@ export const isUserLoggedIn = () => (dispatch) => {
 };
 
 export const signout = () => (dispatch) => {
-  localStorage.clear();
-  dispatch({
-    type: authTypes.LOGOUT_REQUEST,
-  });
+  dispatch({ type: authTypes.LOGOUT_REQUEST });
+  var token = window.localStorage.getItem("token");
+  axios
+    .post(
+      "/auth/admin/signout",
+      {},
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      }
+    )
+    .then((res) => {
+      if (res.status == 200) {
+        localStorage.clear();
+        dispatch({
+          type: authTypes.LOGOUT_SUCCESS,
+        });
+      }
+    })
+    .catch((error) => {
+      dispatch({
+        type: authTypes.LOGOUT_FAILURE,
+        payload: {
+          error: error.response.data.error,
+        },
+      });
+    });
 };
