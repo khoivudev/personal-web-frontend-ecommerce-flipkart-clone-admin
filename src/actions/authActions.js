@@ -23,7 +23,7 @@ export const login = (user) => (dispatch) => {
       dispatch({
         type: authTypes.LOGIN_FAILURE,
         payload: {
-          error: error.response.data,
+          error: error.response.data.error,
         },
       });
     });
@@ -44,8 +44,15 @@ export const isUserLoggedIn = () => (dispatch) => {
     dispatch({
       type: authTypes.LOGIN_FAILURE,
       payload: {
-        error: "Failed to login",
+        error: "Please login to continue",
       },
     });
   }
+};
+
+export const signout = () => (dispatch) => {
+  localStorage.clear();
+  dispatch({
+    type: authTypes.LOGOUT_REQUEST,
+  });
 };

@@ -1,36 +1,73 @@
 import React from "react";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { signup } from "../../actions";
+import { Redirect } from "react-router-dom";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
-
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import Notification from "../../components/Notification";
 
 const Signup = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const user = useSelector((state) => state.user);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  if (auth.authenticate) {
+    return <Redirect to={`/`} />;
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const user = {
+      firstName,
+      lastName,
+      email,
+      password,
+    };
+    dispatch(signup(user));
+  };
+
+  if (user.loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div>
       <Layout>
         <Container>
           <Row style={{ marginTop: "50px" }}>
             <Col md={{ span: 6, offset: 3 }}>
-              <Form>
+              {user.error !== "" && (
+                <Notification messageType="danger" message={user.error} />
+              )}
+              <Form onSubmit={handleSubmit}>
                 <Row>
                   <Col md={6}>
                     <Input
                       label="First Name"
                       placeholder="First Name"
-                      value=""
+                      value={firstName}
                       type="text"
-                      controlId="formFirstName"
-                      onChange={() => {}}
+                      onChange={(e) => {
+                        setFirstName(e.target.value);
+                      }}
                     />
                   </Col>
                   <Col md={6}>
                     <Input
                       label="Last Name"
                       placeholder="Last Name"
-                      value=""
+                      value={lastName}
                       type="text"
-                      controlId="formLastName"
-                      onChange={() => {}}
+                      onChange={(e) => {
+                        setLastName(e.target.value);
+                      }}
                     />
                   </Col>
                 </Row>
@@ -38,23 +75,27 @@ const Signup = () => {
                 <Input
                   label="Email address"
                   placeholder="Enter email"
-                  value=""
+                  value={email}
                   type="email"
                   controlId="formEmail"
-                  onChange={() => {}}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                 />
 
                 <Input
                   label="Password"
                   placeholder="Password"
-                  value=""
+                  value={password}
                   type="password"
                   controlId="formPassword"
-                  onChange={() => {}}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                 />
 
                 <Button variant="primary" type="submit">
-                  Submit
+                  Sign Up
                 </Button>
               </Form>
             </Col>

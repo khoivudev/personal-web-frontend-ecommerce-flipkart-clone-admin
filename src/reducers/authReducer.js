@@ -10,6 +10,7 @@ const inititalState = {
   },
   authenticate: false,
   authenticating: false,
+  error: "",
 };
 
 export default function (state = inititalState, action) {
@@ -31,7 +32,11 @@ export default function (state = inititalState, action) {
       return {
         ...state,
         authenticating: false,
+        error: action.payload.error,
       };
+    case authTypes.LOGOUT_REQUEST:
+      return inititalState;
+
     default:
       return state;
   }
