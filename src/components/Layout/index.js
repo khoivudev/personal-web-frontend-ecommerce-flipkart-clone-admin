@@ -14,7 +14,9 @@ const Layout = (props) => {
             <Col md={2} className="sidebar">
               <ul>
                 <li>
-                  <NavLink to={`/`}>Home</NavLink>
+                  <NavLink exact to={`/`}>
+                    Home
+                  </NavLink>
                 </li>
                 <li>
                   <NavLink to={`/category`}>Category</NavLink>
