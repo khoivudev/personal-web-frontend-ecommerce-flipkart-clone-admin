@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllProduct, addProduct, getAllCategory } from "../../actions";
+import { getAllProduct, addProduct } from "../../actions";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
 import { Col, Container, Row, Modal, Button } from "react-bootstrap";
@@ -22,7 +22,6 @@ const Products = (props) => {
 
   useEffect(() => {
     dispatch(getAllProduct());
-    dispatch(getAllCategory());
   }, []);
 
   const handleCloseModal = () => setShowModal(false);

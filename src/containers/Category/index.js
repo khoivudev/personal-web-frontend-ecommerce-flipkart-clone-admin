@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllCategory, addCategory } from "../../actions";
+import { addCategory } from "../../actions";
 
 import { Col, Container, Row, Modal, Button } from "react-bootstrap";
 import Input from "../../components/UI/Input";
@@ -15,10 +15,6 @@ const Category = (props) => {
 
   const category = useSelector((state) => state.category);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllCategory());
-  }, []);
 
   const renderCategories = (categories) => {
     let myCategories = [];
