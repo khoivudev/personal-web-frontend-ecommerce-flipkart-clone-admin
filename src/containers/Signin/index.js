@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
-import Notification from "../../components/Notification";
+import Notification from "../../components/UI/Notification";
 
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useState } from "react";

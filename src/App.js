@@ -4,7 +4,7 @@ import PrivateRoute from "./components/HOC/PrivateRoute";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { isUserLoggedIn, getAllCategory } from "./actions";
+import { isUserLoggedIn, getInitialData } from "./actions";
 
 import Home from "./containers/Home";
 import Signin from "./containers/Signin";
@@ -21,7 +21,7 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
-    dispatch(getAllCategory());
+    dispatch(getInitialData());
   }, []);
 
   return (

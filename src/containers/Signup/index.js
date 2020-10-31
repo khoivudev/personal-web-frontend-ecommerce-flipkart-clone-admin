@@ -5,8 +5,8 @@ import { signup } from "../../actions";
 import { Redirect } from "react-router-dom";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
+import Notification from "../../components/UI/Notification";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
-import Notification from "../../components/Notification";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
