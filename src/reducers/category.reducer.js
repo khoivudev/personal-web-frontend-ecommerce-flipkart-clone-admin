@@ -9,7 +9,7 @@ const inititalState = {
 const buildNewCategories = (parentId, categories, category) => {
   let myCategories = [];
   for (let cat of categories) {
-    if (cat._id == parentId) {
+    if (cat._id === parentId) {
       myCategories.push({
         ...cat,
         children:
