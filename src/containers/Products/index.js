@@ -231,7 +231,7 @@ const Products = (props) => {
           <Col md={12}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <h3>Product</h3>
-              <Button variant="primary" onClick={handleShowAddProductModal}>
+              <Button variant="dark" onClick={handleShowAddProductModal}>
                 Add
               </Button>
             </div>

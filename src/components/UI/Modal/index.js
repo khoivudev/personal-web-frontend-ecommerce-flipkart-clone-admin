@@ -10,7 +10,7 @@ const NewModal = (props) => {
       </Modal.Header>
       <Modal.Body>{props.children}</Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={props.handleSubmit}>
+        <Button variant="dark" onClick={props.handleSubmit}>
           Save
         </Button>
       </Modal.Footer>
