@@ -52,16 +52,17 @@ export const isUserLoggedIn = () => (dispatch) => {
 
 export const signout = () => (dispatch) => {
   dispatch({ type: authTypes.LOGOUT_REQUEST });
-  var token = window.localStorage.getItem("token");
+  //var token = window.localStorage.getItem("token");
   axios
     .post(
-      "/auth/admin/signout",
-      {},
-      {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      }
+      "/auth/admin/signout"
+      // ,
+      // {},
+      // {
+      //   headers: {
+      //     Authorization: token ? `Bearer ${token}` : "",
+      //   },
+      // }
     )
     .then((res) => {
       if (res.status === 200) {

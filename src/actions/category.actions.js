@@ -27,14 +27,18 @@ export const getAllCategory = () => (dispatch) => {
 };
 
 export const addCategory = (form) => (dispatch) => {
-  var token = window.localStorage.getItem("token");
+  //var token = window.localStorage.getItem("token");
   dispatch({ type: categoryTypes.ADD_CATEGORY_REQUEST });
   axios
-    .post("/category/create", form, {
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    })
+    .post(
+      "/category/create",
+      form
+      // , {
+      //   headers: {
+      //     Authorization: token ? `Bearer ${token}` : "",
+      //   },
+      // }
+    )
     .then((res) => {
       if (res.status === 200) {
         dispatch({
@@ -56,12 +60,16 @@ export const addCategory = (form) => (dispatch) => {
 };
 
 export const updateCategories = (form) => async (dispatch) => {
-  var token = window.localStorage.getItem("token");
-  const res = await axios.post("/category/update", form, {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-  });
+  //var token = window.localStorage.getItem("token");
+  const res = await axios.post(
+    "/category/update",
+    form
+    // , {
+    //   headers: {
+    //     Authorization: token ? `Bearer ${token}` : "",
+    //   },
+    // }
+  );
   if (res.status === 200) {
     //console.log(res);
     return true;
@@ -72,11 +80,12 @@ export const updateCategories = (form) => async (dispatch) => {
 };
 
 export const deleteCategories = (ids) => async (dispatch) => {
-  var token = window.localStorage.getItem("token");
+  //var token = window.localStorage.getItem("token");
   const res = await axios.delete("/category/delete", {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
+    // headers: {
+    //   Authorization: token ? `Bearer ${token}` : "",
+    // }
+    // ,
     data: {
       payload: {
         ids: ids,

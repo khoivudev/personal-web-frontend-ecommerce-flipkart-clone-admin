@@ -1,11 +1,39 @@
 import axios from "axios";
 import { api } from "../urlConfig";
+import store from "../store";
+import { authTypes } from "../actions/types";
 
+const token = window.localStorage.getItem("token");
 const axiosInstance = axios.create({
   baseURL: api,
-  // headers: {
-  //   Authorization: window.localStorage.getItem("token") ? `Bearer ${window.localStorage.getItem("token")}` : "",
-  // },
+  headers: {
+    Authorization: token ? `Bearer ${token}` : "",
+  },
 });
+
+axiosInstance.interceptors.request.use((req) => {
+  //update token before req send
+  const { auth } = store.getState();
+  if (auth.token) {
+    req.headers.Authorization = `Bearer ${auth.token}`;
+  }
+  return req;
+});
+
+axiosInstance.interceptors.response.use(
+  (res) => {
+    return res;
+  },
+  (error) => {
+    console.log(error.response);
+    const { status } = error.response;
+    //process data before render send to UI
+    if (status === 500) {
+      localStorage.clear();
+      store.dispatch({ type: authTypes.LOGOUT_SUCCESS });
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

@@ -26,14 +26,18 @@ export const getAllProduct = () => (dispatch) => {
 };
 
 export const addProduct = (form) => (dispatch) => {
-  var token = window.localStorage.getItem("token");
+  //var token = window.localStorage.getItem("token");
   dispatch({ type: productTypes.ADD_PRODUCT_REQUEST });
   axios
-    .post("/product/create", form, {
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    })
+    .post(
+      "/product/create",
+      form
+      // , {
+      //   headers: {
+      //     Authorization: token ? `Bearer ${token}` : "",
+      //   },
+      // }
+    )
     .then((res) => {
       dispatch({
         type: productTypes.ADD_PRODUCT_SUCCESS,
