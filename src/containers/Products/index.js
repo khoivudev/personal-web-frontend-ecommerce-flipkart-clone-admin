@@ -173,6 +173,7 @@ const Products = (props) => {
         ]}
       >
         <Input
+          className="form-control-sm"
           label="Name"
           placeholder="Product name"
           type="text"
@@ -182,6 +183,7 @@ const Products = (props) => {
           }}
         />
         <Input
+          className="form-control-sm"
           label="Quantity"
           placeholder="Quantity"
           value={quantity}
@@ -190,6 +192,7 @@ const Products = (props) => {
           }}
         />
         <Input
+          className="form-control-sm"
           label="Price"
           placeholder="Price"
           value={price}
@@ -198,6 +201,7 @@ const Products = (props) => {
           }}
         />
         <Input
+          className="form-control-sm"
           label="Description"
           placeholder="Description"
           value={description}
@@ -207,7 +211,7 @@ const Products = (props) => {
         />
 
         <select
-          className="form-control"
+          className="form-control form-control-sm"
           value={categoryId}
           onChange={(e) => {
             setCategoryId(e.target.value);
@@ -220,17 +224,18 @@ const Products = (props) => {
             </option>
           ))}
         </select>
-
-        {productPictures.length > 0
-          ? productPictures.map((pic, index) => (
-              <div key={index}>{pic.name}</div>
-            ))
-          : null}
-        <Input
-          type="file"
-          name="productPictures"
-          onChange={handleProductPictures}
-        />
+        <div>
+          {productPictures.length > 0
+            ? productPictures.map((pic, index) => (
+                <div key={index}>{pic.name}</div>
+              ))
+            : null}
+          <Input
+            type="file"
+            name="productPictures"
+            onChange={handleProductPictures}
+          />
+        </div>
       </Modal>
     );
   };
@@ -242,7 +247,11 @@ const Products = (props) => {
           <Col md={12}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <h3>Product</h3>
-              <Button variant="dark" onClick={handleShowAddProductModal}>
+              <Button
+                variant="dark"
+                className="btn-sm"
+                onClick={handleShowAddProductModal}
+              >
                 Add
               </Button>
             </div>

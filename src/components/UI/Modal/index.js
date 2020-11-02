@@ -12,12 +12,21 @@ const NewModal = (props) => {
       <Modal.Footer>
         {props.buttons ? (
           props.buttons.map((btn, index) => (
-            <Button key={index} variant={btn.color} onClick={btn.onClick}>
+            <Button
+              className="btn-sm"
+              key={index}
+              variant={btn.color}
+              onClick={btn.onClick}
+            >
               {btn.label}
             </Button>
           ))
         ) : (
-          <Button variant="primary" onClick={props.handleSubmit}>
+          <Button
+            className="btn-sm"
+            variant="primary"
+            onClick={props.handleSubmit}
+          >
             Save
           </Button>
         )}
