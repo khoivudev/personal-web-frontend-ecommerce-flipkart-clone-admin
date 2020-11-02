@@ -66,6 +66,28 @@ export const updateCategories = (form) => async (dispatch) => {
     //console.log(res);
     return true;
   } else {
-    console.log(res);
+    //console.log(res);
+    return false;
+  }
+};
+
+export const deleteCategories = (ids) => async (dispatch) => {
+  var token = window.localStorage.getItem("token");
+  const res = await axios.delete("/category/delete", {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+    data: {
+      payload: {
+        ids: ids,
+      },
+    },
+  });
+  if (res.status === 200) {
+    //console.log(res);
+    return true;
+  } else {
+    //console.log(res);
+    return false;
   }
 };

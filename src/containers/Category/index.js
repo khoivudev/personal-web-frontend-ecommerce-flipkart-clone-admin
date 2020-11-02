@@ -1,7 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addCategory, getAllCategory, updateCategories } from "../../actions";
+import {
+  addCategory,
+  getAllCategory,
+  updateCategories,
+  deleteCategories,
+} from "../../actions";
 import { Col, Container, Row, Button } from "react-bootstrap";
 import {
   MdCheckBox,
@@ -18,9 +23,12 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css";
 const Category = (props) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [categoryName, setCategoryName] = useState("");
   const [parentCategoryId, setParentCategoryId] = useState("");
   const [categoryImage, setCategoryImage] = useState("");
+
   const [checked, setChecked] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [checkedArray, setCheckedArray] = useState([]);
@@ -55,8 +63,7 @@ const Category = (props) => {
     setShowAddModal(false);
   };
 
-  const handleShowEditModal = () => {
-    setShowEditModal(true);
+  const updateCheckedAndExpandedCategories = () => {
     const categories = createCategoryList(category.categories);
     const checkedArray = [];
     const expandedArray = [];
@@ -77,6 +84,11 @@ const Category = (props) => {
 
     setCheckedArray(checkedArray);
     setExpandedArray(expandedArray);
+  };
+
+  const handleShowEditModal = () => {
+    setShowEditModal(true);
+    updateCheckedAndExpandedCategories();
   };
   const handleCloseEditModal = () => setShowEditModal(false);
   const handleSubmitEditModal = () => {
@@ -102,6 +114,28 @@ const Category = (props) => {
     });
 
     setShowEditModal(false);
+  };
+
+  const handleShowDeleteModal = () => {
+    setShowDeleteModal(true);
+    updateCheckedAndExpandedCategories();
+  };
+
+  const handleCloseDeleteModal = () => setShowDeleteModal(false);
+  const handleSubmitDeleteModal = () => {
+    const checkedIdsArray = checkedArray.map((item, index) => ({
+      _id: item.value,
+    }));
+    const expandedIdsArray = expandedArray.map((item, index) => ({
+      _id: item.value,
+    }));
+    const idsArray = checkedIdsArray.concat(expandedIdsArray);
+    dispatch(deleteCategories(idsArray)).then((result) => {
+      if (result) {
+        dispatch(getAllCategory());
+      }
+    });
+    setShowDeleteModal(false);
   };
 
   const createCategoryList = (categories, options = []) => {
@@ -138,7 +172,18 @@ const Category = (props) => {
         show={showAddModal}
         modalTitle={"Add new Category"}
         handleClose={handleCloseAddModal}
-        handleSubmit={handleSubmitAddModal}
+        buttons={[
+          {
+            label: "Save",
+            color: "primary",
+            onClick: handleSubmitAddModal,
+          },
+          {
+            label: "Cancel",
+            color: "dark",
+            onClick: handleCloseAddModal,
+          },
+        ]}
       >
         <Input
           placeholder="Enter category name"
@@ -180,8 +225,19 @@ const Category = (props) => {
         show={showEditModal}
         modalTitle={"Edit categories"}
         handleClose={handleCloseEditModal}
-        handleSubmit={handleSubmitEditModal}
         size="lg"
+        buttons={[
+          {
+            label: "Save",
+            color: "primary",
+            onClick: handleSubmitEditModal,
+          },
+          {
+            label: "Cancel",
+            color: "dark",
+            onClick: handleCloseEditModal,
+          },
+        ]}
       >
         <Row>
           <Col>
@@ -315,6 +371,41 @@ const Category = (props) => {
     );
   };
 
+  const renderDeleteCategoriesModal = () => {
+    return (
+      <Modal
+        modalTitle={"Confirm"}
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        handleSubmit={handleSubmitDeleteModal}
+        buttons={[
+          {
+            label: "Yes",
+            color: "danger",
+            onClick: handleSubmitDeleteModal,
+          },
+          {
+            label: "No",
+            color: "dark",
+            onClick: handleCloseDeleteModal,
+          },
+        ]}
+      >
+        <p>Are you sure to delete these items?</p>
+        <h5>Expanded Items:</h5>
+        {expandedArray.length > 0 &&
+          expandedArray.map((item, index) => (
+            <span key={index}>{item.name} </span>
+          ))}
+        <h5>Checked Items:</h5>
+        {checkedArray.length > 0 &&
+          checkedArray.map((item, index) => (
+            <span key={index}>{item.name}</span>
+          ))}
+      </Modal>
+    );
+  };
+
   return (
     <Layout sidebar>
       <Container>
@@ -359,13 +450,16 @@ const Category = (props) => {
             <Button variant="dark" onClick={handleShowEditModal}>
               Edit
             </Button>{" "}
-            <Button variant="dark">Delete</Button>
+            <Button variant="dark" onClick={handleShowDeleteModal}>
+              Delete
+            </Button>
           </Col>
         </Row>
       </Container>
 
       {renderAddCategoryModal()}
       {renderEditCategoriesModal()}
+      {renderDeleteCategoriesModal()}
     </Layout>
   );
 };

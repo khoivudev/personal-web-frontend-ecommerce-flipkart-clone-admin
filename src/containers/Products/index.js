@@ -159,7 +159,18 @@ const Products = (props) => {
         show={showAddProductModal}
         modalTitle={`Add new product`}
         handleClose={handleCloseAddProductModal}
-        handleSubmit={handleSubmitAddProductModal}
+        buttons={[
+          {
+            label: "Save",
+            color: "primary",
+            onClick: handleSubmitAddProductModal,
+          },
+          {
+            label: "Cancel",
+            color: "dark",
+            onClick: handleCloseAddProductModal,
+          },
+        ]}
       >
         <Input
           label="Name"
