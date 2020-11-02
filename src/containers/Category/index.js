@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addCategory } from "../../actions";
+import { addCategory, getAllCategory, updateCategories } from "../../actions";
 import { Col, Container, Row, Button } from "react-bootstrap";
 import {
   MdCheckBox,
@@ -80,6 +80,27 @@ const Category = (props) => {
   };
   const handleCloseEditModal = () => setShowEditModal(false);
   const handleSubmitEditModal = () => {
+    const form = new FormData();
+    checkedArray.forEach((item) => {
+      form.append("_id", item.value);
+      form.append("name", item.name);
+      form.append("parentId", item.parentId ? item.parentId : "");
+      form.append("type", item.type ? item.type : "");
+    });
+
+    expandedArray.forEach((item) => {
+      form.append("_id", item.value);
+      form.append("name", item.name);
+      form.append("parentId", item.parentId ? item.parentId : "");
+      form.append("type", item.type ? item.type : "");
+    });
+
+    dispatch(updateCategories(form)).then((result) => {
+      if (result) {
+        dispatch(getAllCategory());
+      }
+    });
+
     setShowEditModal(false);
   };
 
@@ -111,55 +132,8 @@ const Category = (props) => {
     }
   };
 
-  return (
-    <Layout sidebar>
-      <Container>
-        <Row>
-          <Col md={12}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3>Category</h3>
-              <Button variant="dark" onClick={handleShowAddModal}>
-                Add
-              </Button>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <CheckboxTree
-              nodes={renderCategories(category.categories)}
-              checked={checked}
-              expanded={expanded}
-              onCheck={(checked) => setChecked(checked)}
-              onExpand={(expanded) => setExpanded(expanded)}
-              icons={{
-                check: <MdCheckBox />,
-                uncheck: <MdCheckBoxOutlineBlank />,
-                halfCheck: <MdCheckBoxOutlineBlank />,
-                expandClose: <MdKeyboardArrowRight />,
-                expandOpen: <MdKeyboardArrowDown />,
-                expandAll: <></>,
-                collapseAll: <></>,
-                parentClose: <></>,
-                parentOpen: <></>,
-                leaf: <></>,
-              }}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <p style={{ fontSize: "12px", color: "#dc3545" }}>
-              (*) Click to choose categories to delete or edit
-            </p>
-            <Button variant="dark" onClick={handleShowEditModal}>
-              Edit
-            </Button>{" "}
-            <Button variant="dark">Delete</Button>
-          </Col>
-        </Row>
-      </Container>
-
+  const renderAddCategoryModal = () => {
+    return (
       <Modal
         show={showAddModal}
         modalTitle={"Add new Category"}
@@ -181,7 +155,7 @@ const Category = (props) => {
           }}
           value={parentCategoryId}
         >
-          <option>Select category</option>
+          <option value={""}>Select category</option>
           {createCategoryList(category.categories).map((option) => (
             <option key={option.value} value={option.value}>
               {option.name}
@@ -197,7 +171,11 @@ const Category = (props) => {
           }}
         />
       </Modal>
+    );
+  };
 
+  const renderEditCategoriesModal = () => {
+    return (
       <Modal
         show={showEditModal}
         modalTitle={"Edit categories"}
@@ -241,7 +219,7 @@ const Category = (props) => {
                     )
                   }
                 >
-                  <option>Select category</option>
+                  <option value={""}>Select category</option>
                   {createCategoryList(category.categories).map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.name}
@@ -250,7 +228,17 @@ const Category = (props) => {
                 </select>
               </Col>
               <Col>
-                <select className="form-control">
+                <select
+                  className="form-control"
+                  onChange={(e) =>
+                    handleCategoryInput(
+                      "type",
+                      e.target.value,
+                      index,
+                      "expanded"
+                    )
+                  }
+                >
                   <option value="">Select Type</option>
                   <option value="store">Store</option>
                   <option value="product">Product</option>
@@ -304,7 +292,17 @@ const Category = (props) => {
                 </select>
               </Col>
               <Col>
-                <select className="form-control">
+                <select
+                  className="form-control"
+                  onChange={(e) =>
+                    handleCategoryInput(
+                      "type",
+                      e.target.value,
+                      index,
+                      "checked"
+                    )
+                  }
+                >
                   <option value="">Select Type</option>
                   <option value="store">Store</option>
                   <option value="product">Product</option>
@@ -314,6 +312,60 @@ const Category = (props) => {
             </Row>
           ))}
       </Modal>
+    );
+  };
+
+  return (
+    <Layout sidebar>
+      <Container>
+        <Row>
+          <Col md={12}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h3>Category</h3>
+              <Button variant="dark" onClick={handleShowAddModal}>
+                Add
+              </Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <CheckboxTree
+              nodes={renderCategories(category.categories)}
+              checked={checked}
+              expanded={expanded}
+              onCheck={(checked) => setChecked(checked)}
+              onExpand={(expanded) => setExpanded(expanded)}
+              icons={{
+                check: <MdCheckBox />,
+                uncheck: <MdCheckBoxOutlineBlank />,
+                halfCheck: <MdCheckBoxOutlineBlank />,
+                expandClose: <MdKeyboardArrowRight />,
+                expandOpen: <MdKeyboardArrowDown />,
+                expandAll: <></>,
+                collapseAll: <></>,
+                parentClose: <></>,
+                parentOpen: <></>,
+                leaf: <></>,
+              }}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <p style={{ fontSize: "12px", color: "#dc3545" }}>
+              (*) Click to choose categories to delete or edit
+            </p>
+            <Button variant="dark" onClick={handleShowEditModal}>
+              Edit
+            </Button>{" "}
+            <Button variant="dark">Delete</Button>
+          </Col>
+        </Row>
+      </Container>
+
+      {renderAddCategoryModal()}
+      {renderEditCategoriesModal()}
     </Layout>
   );
 };

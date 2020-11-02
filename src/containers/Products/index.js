@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../../actions";
-import { Col, Container, Row, Button, Table, NavItem } from "react-bootstrap";
+import { Col, Container, Row, Button, Table } from "react-bootstrap";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
 import Modal from "../../components/UI/Modal";

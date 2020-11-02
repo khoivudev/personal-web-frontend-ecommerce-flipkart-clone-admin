@@ -54,3 +54,18 @@ export const addCategory = (form) => (dispatch) => {
       });
     });
 };
+
+export const updateCategories = (form) => async (dispatch) => {
+  var token = window.localStorage.getItem("token");
+  const res = await axios.post("/category/update", form, {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  });
+  if (res.status === 200) {
+    //console.log(res);
+    return true;
+  } else {
+    console.log(res);
+  }
+};
