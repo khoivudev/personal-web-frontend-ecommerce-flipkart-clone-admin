@@ -1,7 +1,7 @@
 import axios from "../helpers/axios";
 import { categoryTypes } from "./types";
 
-export const getAllCategory = () => (dispatch) => {
+const getAllCategory = () => (dispatch) => {
   dispatch({ type: categoryTypes.GET_ALL_CATEGORY_REQUEST });
   axios
     .get("/category/getcategory")
@@ -61,6 +61,7 @@ export const addCategory = (form) => (dispatch) => {
 
 export const updateCategories = (form) => async (dispatch) => {
   //var token = window.localStorage.getItem("token");
+  dispatch({ type: categoryTypes.UPDATE_CATEGORIES_REQUEST });
   const res = await axios.post(
     "/category/update",
     form
@@ -71,15 +72,21 @@ export const updateCategories = (form) => async (dispatch) => {
     // }
   );
   if (res.status === 200) {
-    //console.log(res);
-    return true;
+    dispatch({
+      type: categoryTypes.UPDATE_CATEGORIES_SUCCESS,
+    });
+    dispatch(getAllCategory());
   } else {
-    //console.log(res);
-    return false;
+    const { error } = res;
+    dispatch({
+      type: categoryTypes.UPDATE_CATEGORIES_FAILURE,
+      payload: { error },
+    });
   }
 };
 
 export const deleteCategories = (ids) => async (dispatch) => {
+  dispatch({ type: categoryTypes.DELETE_CATEGORIES_REQUEST });
   //var token = window.localStorage.getItem("token");
   const res = await axios.delete("/category/delete", {
     // headers: {
@@ -93,10 +100,15 @@ export const deleteCategories = (ids) => async (dispatch) => {
     },
   });
   if (res.status === 200) {
-    //console.log(res);
-    return true;
+    dispatch({ type: categoryTypes.DELETE_CATEGORIES_SUCCESS });
+    dispatch(getAllCategory());
   } else {
-    //console.log(res);
-    return false;
+    const { error } = res;
+    dispatch({
+      type: categoryTypes.DELETE_CATEGORIES_FAILURE,
+      payload: { error },
+    });
   }
 };
+
+export { getAllCategory };

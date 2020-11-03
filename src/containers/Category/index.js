@@ -113,12 +113,8 @@ const Category = () => {
       form.append("type", item.type ? item.type : "");
     });
 
-    dispatch(updateCategories(form)).then((result) => {
-      if (result) {
-        dispatch(getAllCategory());
-        setShowEditModal(false);
-      }
-    });
+    dispatch(updateCategories(form));
+    setShowEditModal(false);
   };
 
   const handleShowDeleteModal = () => {
@@ -137,12 +133,8 @@ const Category = () => {
     const idsArray = checkedIdsArray.concat(expandedIdsArray);
 
     if (checkedIdsArray.length > 0) {
-      dispatch(deleteCategories(checkedIdsArray)).then((result) => {
-        if (result) {
-          dispatch(getAllCategory());
-          setShowDeleteModal(false);
-        }
-      });
+      dispatch(deleteCategories(checkedIdsArray));
+      setShowDeleteModal(false);
     }
   };
 
