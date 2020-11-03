@@ -70,18 +70,15 @@ const AddProductModal = (props) => {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <select
+      <Input
+        type="select"
         className="form-control form-control-sm"
+        placeholder={"Select category"}
         value={categoryId}
         onChange={(e) => setCategoryId(e.target.value)}
-      >
-        <option>Select category</option>
-        {categoryList.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+        options={categoryList}
+      />
+
       <div>
         {productPictures.length > 0
           ? productPictures.map((pic, index) => (

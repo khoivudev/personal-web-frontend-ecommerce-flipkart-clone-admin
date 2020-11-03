@@ -22,6 +22,8 @@ import AddCategoryModal from "./components/AddCategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoriesModal";
 import "./style.css";
 
+import linearCategories from "../../helpers/linearCategories";
+
 const Category = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -75,7 +77,7 @@ const Category = () => {
   };
 
   const updateCheckedAndExpandedCategories = () => {
-    const categories = createCategoryList(category.categories);
+    const categories = linearCategories(category.categories);
     const checkedArray = [];
     const expandedArray = [];
     checked.length > 0 &&
@@ -132,30 +134,15 @@ const Category = () => {
     const checkedIdsArray = checkedArray.map((item, index) => ({
       _id: item.value,
     }));
-    const expandedIdsArray = expandedArray.map((item, index) => ({
-      _id: item.value,
-    }));
-    const idsArray = checkedIdsArray.concat(expandedIdsArray);
+    // const expandedIdsArray = expandedArray.map((item, index) => ({
+    //   _id: item.value,
+    // }));
+    // const idsArray = checkedIdsArray.concat(expandedIdsArray);
 
     if (checkedIdsArray.length > 0) {
       dispatch(deleteCategories(checkedIdsArray));
       setShowDeleteModal(false);
     }
-  };
-
-  const createCategoryList = (categories, options = []) => {
-    for (let category of categories) {
-      options.push({
-        value: category._id,
-        name: category.name,
-        parentId: category.parentId,
-        type: category.type,
-      });
-      if (category.children.length > 0) {
-        createCategoryList(category.children, options);
-      }
-    }
-    return options;
   };
 
   const handleCategoryInput = (key, value, index, type) => {
@@ -241,7 +228,7 @@ const Category = () => {
             parentCategoryId={parentCategoryId}
             setParentCategoryId={setParentCategoryId}
             setCategoryImage={setCategoryImage}
-            categoryList={createCategoryList(category.categories)}
+            categoryList={linearCategories(category.categories)}
           />
 
           <EditCategoriesModal
@@ -253,7 +240,7 @@ const Category = () => {
             expandedArray={expandedArray}
             checkedArray={checkedArray}
             handleCategoryInput={handleCategoryInput}
-            categoryList={createCategoryList(category.categories)}
+            categoryList={linearCategories(category.categories)}
           />
 
           <DeleteCategoryModal
@@ -261,7 +248,6 @@ const Category = () => {
             show={showDeleteModal}
             handleClose={handleCloseDeleteModal}
             handleSubmit={handleSubmitDeleteModal}
-            expandedArray={expandedArray}
             checkedArray={checkedArray}
           />
         </>

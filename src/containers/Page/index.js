@@ -110,21 +110,16 @@ const Page = () => {
       >
         <Row>
           <Col>
-            <select
-              className="form-control form-control-sm"
+            <Input
+              type="select"
+              className={"form-control form-control-sm"}
               value={categoryId}
-              onChange={(e) => handleOnChangeCategorySelect(e)}
-            >
-              <option value="">Select Category</option>
-              {categories.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+              onChange={handleOnChangeCategorySelect}
+              options={categories}
+              placeholder="Select category"
+            />
           </Col>
         </Row>
-        <br />
         <Row>
           <Col>
             <Input

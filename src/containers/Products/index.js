@@ -9,6 +9,8 @@ import Layout from "../../components/Layout";
 import Modal from "../../components/UI/Modal";
 import Loading from "../../components/UI/Loading";
 import "./style.css";
+
+import linearCategories from "../../helpers/linearCategories";
 import { generatePublicUrl } from "../../urlConfig";
 
 const Products = () => {
@@ -62,16 +64,6 @@ const Products = () => {
 
     dispatch(addProduct(form));
     setShowAddProductModal(false);
-  };
-
-  const createCategoryList = (categories, options = []) => {
-    for (let category of categories) {
-      options.push({ value: category._id, name: category.name });
-      if (category.children.length > 0) {
-        createCategoryList(category.children, options);
-      }
-    }
-    return options;
   };
 
   const handleProductPictures = (e) => {
@@ -224,7 +216,7 @@ const Products = () => {
               setDescription={setDescription}
               categoryId={categoryId}
               setCategoryId={setCategoryId}
-              categoryList={createCategoryList(category.categories)}
+              categoryList={linearCategories(category.categories)}
               productPictures={productPictures}
               handleProductPictures={handleProductPictures}
             />
