@@ -9,6 +9,7 @@ import { isUserLoggedIn, getInitialData } from "./actions";
 import Home from "./containers/Home";
 import Signin from "./containers/Signin";
 import Signup from "./containers/Signup";
+import Page from "./containers/Page";
 import Products from "./containers/Products";
 import Orders from "./containers/Orders";
 import Category from "./containers/Category";
@@ -28,6 +29,7 @@ function App() {
     <div className="app">
       <Switch>
         <PrivateRoute path="/" exact component={Home} />
+        <PrivateRoute path="/page" component={Page} />
         <PrivateRoute path="/products" component={Products} />
         <PrivateRoute path="/orders" component={Orders} />
         <PrivateRoute path="/category" component={Category} />
