@@ -3,6 +3,7 @@ import authReducer from "./auth.reducer";
 import userReducer from "./user.reducer";
 import productReducer from "./product.reducer";
 import categoryReducer from "./category.reducer";
+import pageReducer from "./page.reducer";
 import orderReducer from "./order.reducer";
 
 const rootReducer = combineReducers({
@@ -10,6 +11,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   product: productReducer,
   category: categoryReducer,
+  pageReducer: pageReducer,
   order: orderReducer,
 });
 
