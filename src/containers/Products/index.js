@@ -2,14 +2,15 @@ import React from "react";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../../actions";
-import { Col, Container, Row, Button, Table } from "react-bootstrap";
+import { Col, Container, Row, Table } from "react-bootstrap";
+import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
+import AddProductModal from "./components/AddProductModal";
 import Layout from "../../components/Layout";
-import Input from "../../components/UI/Input";
 import Modal from "../../components/UI/Modal";
 import "./style.css";
 import { generatePublicUrl } from "../../urlConfig";
 
-const Products = (props) => {
+const Products = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -153,114 +154,55 @@ const Products = (props) => {
     );
   };
 
-  const renderAddProductModal = () => {
-    return (
-      <Modal
-        show={showAddProductModal}
-        modalTitle={`Add new product`}
-        handleClose={handleCloseAddProductModal}
-        buttons={[
-          {
-            label: "Save",
-            color: "primary",
-            onClick: handleSubmitAddProductModal,
-          },
-          {
-            label: "Cancel",
-            color: "dark",
-            onClick: handleCloseAddProductModal,
-          },
-        ]}
-      >
-        <Input
-          className="form-control-sm"
-          label="Name"
-          placeholder="Product name"
-          type="text"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-        <Input
-          className="form-control-sm"
-          label="Quantity"
-          placeholder="Quantity"
-          value={quantity}
-          onChange={(e) => {
-            setQuantity(e.target.value);
-          }}
-        />
-        <Input
-          className="form-control-sm"
-          label="Price"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => {
-            setPrice(e.target.value);
-          }}
-        />
-        <Input
-          className="form-control-sm"
-          label="Description"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => {
-            setDescription(e.target.value);
-          }}
-        />
-
-        <select
-          className="form-control form-control-sm"
-          value={categoryId}
-          onChange={(e) => {
-            setCategoryId(e.target.value);
-          }}
-        >
-          <option>Select category</option>
-          {createCategoryList(category.categories).map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.name}
-            </option>
-          ))}
-        </select>
-        <div>
-          {productPictures.length > 0
-            ? productPictures.map((pic, index) => (
-                <div key={index}>{pic.name}</div>
-              ))
-            : null}
-          <Input
-            type="file"
-            name="productPictures"
-            onChange={handleProductPictures}
-          />
-        </div>
-      </Modal>
-    );
-  };
-
   return (
     <Layout sidebar>
       <Container>
         <Row>
           <Col md={12}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3>Product</h3>
-              <Button
-                variant="dark"
-                className="btn-sm"
-                onClick={handleShowAddProductModal}
-              >
-                Add
-              </Button>
+              <h3>Category</h3>
+              <div className="action-btn-container">
+                <span>Actions: </span>
+                <button onClick={handleShowAddProductModal}>
+                  <MdAdd />
+                  <span>Add</span>
+                </button>
+                <button onClick={() => {}}>
+                  <MdEdit />
+                  <span>Edit</span>
+                </button>
+                <button onClick={() => {}}>
+                  <MdDelete />
+                  <span>Delete</span>
+                </button>
+              </div>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>{renderProducts()}</Col>
         </Row>
-        {renderAddProductModal()}
+
+        <AddProductModal
+          show={showAddProductModal}
+          modalTitle={"Add New Product"}
+          handleClose={handleCloseAddProductModal}
+          handleSubmit={handleSubmitAddProductModal}
+          name={name}
+          setName={setName}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          price={price}
+          setPrice={setPrice}
+          description={description}
+          setDescription={setDescription}
+          categoryId={categoryId}
+          setCategoryId={setCategoryId}
+          categoryList={createCategoryList(category.categories)}
+          productPictures={productPictures}
+          handleProductPictures={handleProductPictures}
+        />
+
         {renderShowProductDetailsModal()}
       </Container>
     </Layout>

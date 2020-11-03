@@ -78,6 +78,7 @@ const updateCategoriesModal = (props) => {
             <Col>
               <select
                 className="form-control form-control-sm"
+                value={item.type}
                 onChange={(e) =>
                   handleCategoryInput("type", e.target.value, index, "expanded")
                 }
@@ -122,7 +123,7 @@ const updateCategoriesModal = (props) => {
                   )
                 }
               >
-                <option>Select category</option>
+                <option value="">Select category</option>
                 {categoryList.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.name}
@@ -133,6 +134,7 @@ const updateCategoriesModal = (props) => {
             <Col>
               <select
                 className="form-control form-control-sm"
+                value={item.type}
                 onChange={(e) =>
                   handleCategoryInput("type", e.target.value, index, "checked")
                 }
