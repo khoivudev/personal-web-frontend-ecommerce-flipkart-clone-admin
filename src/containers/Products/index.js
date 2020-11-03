@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../../actions";
 import { Col, Container, Row, Table } from "react-bootstrap";
@@ -7,6 +7,7 @@ import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
 import AddProductModal from "./components/AddProductModal";
 import Layout from "../../components/Layout";
 import Modal from "../../components/UI/Modal";
+import Loading from "../../components/UI/Loading";
 import "./style.css";
 import { generatePublicUrl } from "../../urlConfig";
 
@@ -20,10 +21,22 @@ const Products = () => {
   const [productDetails, setProductDetails] = useState(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showProductDetailsModal, setShowProductDetailsModal] = useState(false);
+
   const product = useSelector((state) => state.product);
   const category = useSelector((state) => state.category);
-
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!product.loading) {
+      //clear modal
+      setName("");
+      setPrice("");
+      setQuantity("");
+      setDescription("");
+      setProductPictures([]);
+      setCategoryId("");
+    }
+  }, [product]);
 
   const handleCloseAddProductModal = () => setShowAddProductModal(false);
   const handleShowAddProductModal = () => setShowAddProductModal(true);
@@ -111,6 +124,13 @@ const Products = () => {
         handleClose={handleCloseProductDetailsModal}
         modalTitle={"Product Details"}
         size={"lg"}
+        buttons={[
+          {
+            label: "Close",
+            color: "dark",
+            onClick: handleCloseProductDetailsModal,
+          },
+        ]}
       >
         <Row>
           <Col md={6}>
@@ -156,55 +176,63 @@ const Products = () => {
 
   return (
     <Layout sidebar>
-      <Container>
-        <Row>
-          <Col md={12}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3>Category</h3>
-              <div className="action-btn-container">
-                <span>Actions: </span>
-                <button onClick={handleShowAddProductModal}>
-                  <MdAdd />
-                  <span>Add</span>
-                </button>
-                <button onClick={() => {}}>
-                  <MdEdit />
-                  <span>Edit</span>
-                </button>
-                <button onClick={() => {}}>
-                  <MdDelete />
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col>{renderProducts()}</Col>
-        </Row>
+      {product.loading ? (
+        <Loading message={"Please wait"} />
+      ) : (
+        <>
+          <Container>
+            <Row>
+              <Col md={12}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <h3>Product</h3>
+                  <div className="action-btn-container">
+                    <span>Actions: </span>
+                    <button onClick={handleShowAddProductModal}>
+                      <MdAdd />
+                      <span>Add</span>
+                    </button>
+                    <button onClick={() => {}}>
+                      <MdEdit />
+                      <span>Edit</span>
+                    </button>
+                    <button onClick={() => {}}>
+                      <MdDelete />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>{renderProducts()}</Col>
+            </Row>
 
-        <AddProductModal
-          show={showAddProductModal}
-          modalTitle={"Add New Product"}
-          handleClose={handleCloseAddProductModal}
-          handleSubmit={handleSubmitAddProductModal}
-          name={name}
-          setName={setName}
-          quantity={quantity}
-          setQuantity={setQuantity}
-          price={price}
-          setPrice={setPrice}
-          description={description}
-          setDescription={setDescription}
-          categoryId={categoryId}
-          setCategoryId={setCategoryId}
-          categoryList={createCategoryList(category.categories)}
-          productPictures={productPictures}
-          handleProductPictures={handleProductPictures}
-        />
+            <AddProductModal
+              show={showAddProductModal}
+              modalTitle={"Add New Product"}
+              handleClose={handleCloseAddProductModal}
+              handleSubmit={handleSubmitAddProductModal}
+              name={name}
+              setName={setName}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              price={price}
+              setPrice={setPrice}
+              description={description}
+              setDescription={setDescription}
+              categoryId={categoryId}
+              setCategoryId={setCategoryId}
+              categoryList={createCategoryList(category.categories)}
+              productPictures={productPictures}
+              handleProductPictures={handleProductPictures}
+            />
 
-        {renderShowProductDetailsModal()}
-      </Container>
+            {renderShowProductDetailsModal()}
+          </Container>
+        </>
+      )}
     </Layout>
   );
 };

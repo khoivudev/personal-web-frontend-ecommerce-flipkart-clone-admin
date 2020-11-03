@@ -1,13 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addCategory,
-  getAllCategory,
-  updateCategories,
-  deleteCategories,
-} from "../../actions";
-import { Col, Container, Row, Button } from "react-bootstrap";
+import { addCategory, updateCategories, deleteCategories } from "../../actions";
+import { Col, Container, Row } from "react-bootstrap";
 import CheckboxTree from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import {
@@ -21,6 +16,7 @@ import {
 } from "react-icons/md";
 
 import Layout from "../../components/Layout";
+import Loading from "../../components/UI/Loading";
 import EditCategoriesModal from "./components/EditCategoriesModal";
 import AddCategoryModal from "./components/AddCategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoriesModal";
@@ -42,6 +38,15 @@ const Category = () => {
 
   const category = useSelector((state) => state.category);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!category.loading) {
+      //clear modal
+      setCategoryName("");
+      setParentCategoryId("");
+      setCategoryImage("");
+    }
+  }, [category]);
 
   const renderCategories = (categories) => {
     let myCategories = [];
@@ -169,90 +174,98 @@ const Category = () => {
 
   return (
     <Layout sidebar>
-      <Container>
-        <Row>
-          <Col md={12}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3>Category</h3>
-              <div className="action-btn-container">
-                <span>Actions: </span>
-                <button onClick={handleShowAddModal}>
-                  <MdAdd />
-                  <span>Add</span>
-                </button>
-                <button onClick={handleShowEditModal}>
-                  <MdEdit />
-                  <span>Edit</span>
-                </button>
-                <button onClick={handleShowDeleteModal}>
-                  <MdDelete />
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <CheckboxTree
-              nodes={renderCategories(category.categories)}
-              checked={checked}
-              expanded={expanded}
-              onCheck={(checked) => setChecked(checked)}
-              onExpand={(expanded) => setExpanded(expanded)}
-              icons={{
-                check: <MdCheckBox />,
-                uncheck: <MdCheckBoxOutlineBlank />,
-                halfCheck: <MdCheckBoxOutlineBlank />,
-                expandClose: <MdKeyboardArrowRight />,
-                expandOpen: <MdKeyboardArrowDown />,
-                expandAll: <></>,
-                collapseAll: <></>,
-                parentClose: <></>,
-                parentOpen: <></>,
-                leaf: <></>,
-              }}
-            />
-          </Col>
-        </Row>
-        <p style={{ fontSize: "12px", color: "#dc3545" }}>
-          (*) Choose categories to delete or edit
-        </p>
-      </Container>
+      {category.loading ? (
+        <Loading message={"Please wait..."} />
+      ) : (
+        <>
+          <Container>
+            <Row>
+              <Col md={12}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <h3>Category</h3>
+                  <div className="action-btn-container">
+                    <span>Actions: </span>
+                    <button onClick={handleShowAddModal}>
+                      <MdAdd />
+                      <span>Add</span>
+                    </button>
+                    <button onClick={handleShowEditModal}>
+                      <MdEdit />
+                      <span>Edit</span>
+                    </button>
+                    <button onClick={handleShowDeleteModal}>
+                      <MdDelete />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={12}>
+                <CheckboxTree
+                  nodes={renderCategories(category.categories)}
+                  checked={checked}
+                  expanded={expanded}
+                  onCheck={(checked) => setChecked(checked)}
+                  onExpand={(expanded) => setExpanded(expanded)}
+                  icons={{
+                    check: <MdCheckBox />,
+                    uncheck: <MdCheckBoxOutlineBlank />,
+                    halfCheck: <MdCheckBoxOutlineBlank />,
+                    expandClose: <MdKeyboardArrowRight />,
+                    expandOpen: <MdKeyboardArrowDown />,
+                    expandAll: <></>,
+                    collapseAll: <></>,
+                    parentClose: <></>,
+                    parentOpen: <></>,
+                    leaf: <></>,
+                  }}
+                />
+              </Col>
+            </Row>
+            <p style={{ fontSize: "12px", color: "#dc3545" }}>
+              (*) Choose categories to delete or edit
+            </p>
+          </Container>
 
-      <AddCategoryModal
-        show={showAddModal}
-        modalTitle={"Add New Category"}
-        handleClose={handleCloseAddModal}
-        handleSubmit={handleSubmitAddModal}
-        categoryName={categoryName}
-        setCategoryName={setCategoryName}
-        parentCategoryId={parentCategoryId}
-        setParentCategoryId={setParentCategoryId}
-        setCategoryImage={setCategoryImage}
-        categoryList={createCategoryList(category.categories)}
-      />
+          <AddCategoryModal
+            show={showAddModal}
+            modalTitle={"Add New Category"}
+            handleClose={handleCloseAddModal}
+            handleSubmit={handleSubmitAddModal}
+            categoryName={categoryName}
+            setCategoryName={setCategoryName}
+            parentCategoryId={parentCategoryId}
+            setParentCategoryId={setParentCategoryId}
+            setCategoryImage={setCategoryImage}
+            categoryList={createCategoryList(category.categories)}
+          />
 
-      <EditCategoriesModal
-        show={showEditModal}
-        handleClose={handleCloseEditModal}
-        handleSubmit={handleSubmitEditModal}
-        modalTitle={"Update Categories"}
-        size="lg"
-        expandedArray={expandedArray}
-        checkedArray={checkedArray}
-        handleCategoryInput={handleCategoryInput}
-        categoryList={createCategoryList(category.categories)}
-      />
+          <EditCategoriesModal
+            show={showEditModal}
+            handleClose={handleCloseEditModal}
+            handleSubmit={handleSubmitEditModal}
+            modalTitle={"Update Categories"}
+            size="lg"
+            expandedArray={expandedArray}
+            checkedArray={checkedArray}
+            handleCategoryInput={handleCategoryInput}
+            categoryList={createCategoryList(category.categories)}
+          />
 
-      <DeleteCategoryModal
-        modalTitle={"Delete Categories"}
-        show={showDeleteModal}
-        handleClose={handleCloseDeleteModal}
-        handleSubmit={handleSubmitDeleteModal}
-        expandedArray={expandedArray}
-        checkedArray={checkedArray}
-      />
+          <DeleteCategoryModal
+            modalTitle={"Delete Categories"}
+            show={showDeleteModal}
+            handleClose={handleCloseDeleteModal}
+            handleSubmit={handleSubmitDeleteModal}
+            expandedArray={expandedArray}
+            checkedArray={checkedArray}
+          />
+        </>
+      )}
     </Layout>
   );
 };

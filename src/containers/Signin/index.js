@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
 import Notification from "../../components/UI/Notification";
-
+import Loading from "../../components/UI/Loading";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,44 +31,45 @@ const Signin = (props) => {
     return <Redirect to={`/`} />;
   }
 
-  if (auth.authenticating) {
-    return <p>Authenticating</p>;
-  }
   return (
     <div>
       <Layout>
         <Container>
-          <Row style={{ marginTop: "50px" }}>
-            <Col md={{ span: 6, offset: 3 }}>
-              {auth.error !== "" && (
-                <Notification messageType="danger" message={auth.error} />
-              )}
-              <Form onSubmit={handleSubmit}>
-                <Input
-                  label="Email address"
-                  placeholder="Enter email"
-                  value={email}
-                  type="email"
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
+          {auth.loading ? (
+            <Loading message={"Loggin in...Please wait"} />
+          ) : (
+            <Row style={{ marginTop: "50px" }}>
+              <Col md={{ span: 6, offset: 3 }}>
+                {auth.error !== "" && (
+                  <Notification messageType="danger" message={auth.error} />
+                )}
+                <Form onSubmit={handleSubmit}>
+                  <Input
+                    label="Email address"
+                    placeholder="Enter email"
+                    value={email}
+                    type="email"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
 
-                <Input
-                  label="Password"
-                  placeholder="Password"
-                  value={password}
-                  type="password"
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-                <Button variant="primary" type="submit">
-                  Sign In
-                </Button>
-              </Form>
-            </Col>
-          </Row>
+                  <Input
+                    label="Password"
+                    placeholder="Password"
+                    value={password}
+                    type="password"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <Button variant="primary" type="submit">
+                    Sign In
+                  </Button>
+                </Form>
+              </Col>
+            </Row>
+          )}
         </Container>
       </Layout>
     </div>

@@ -7,6 +7,7 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 import Layout from "../../components/Layout";
 import Input from "../../components/UI/Input";
 import Modal from "../../components/UI/Modal";
+import Loading from "../../components/UI/Loading";
 import "./style.css";
 
 const Page = () => {
@@ -16,12 +17,26 @@ const Page = () => {
   const [categoryId, setCategoryId] = useState("");
   const [desc, setDesc] = useState("");
   const [type, setType] = useState("");
-  const [banners, setBanners] = useState("");
-  const [products, setProducts] = useState("");
+  const [banners, setBanners] = useState([]);
+  const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const page = useSelector((state) => state.page);
   const category = useSelector((state) => state.category);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!page.loading) {
+      //clear modal after send request
+      setShowCreatePageModal(false);
+      setTitle("");
+      setCategoryId("");
+      setDesc("");
+      setType("");
+      setBanners([]);
+      setProducts([]);
+    }
+  }, [page]);
 
   useEffect(() => {
     setCategories(linearCategories(category.categories));
@@ -30,23 +45,31 @@ const Page = () => {
   const handleShowCreatePageModal = () => setShowCreatePageModal(true);
   const handleCloseCreatePageModal = () => setShowCreatePageModal(false);
   const handleSubmitCreatePageModal = () => {
-    const form = new FormData();
-    form.append("title", title);
-    form.append("description", desc);
-    form.append("category", categoryId);
-    form.append("type", type);
-    if (banners.length > 0) {
-      banners.forEach((banner, index) => {
-        form.append("banners", banner);
-      });
+    if (banners.length <= 0) {
+      alert("Need at least one banner image");
+      setShowCreatePageModal(false);
+    } else if (products.length <= 0) {
+      alert("Need at least one product image");
+      setShowCreatePageModal(false);
+    } else {
+      const form = new FormData();
+      form.append("title", title);
+      form.append("description", desc);
+      form.append("category", categoryId);
+      form.append("type", type);
+      if (banners.length > 0) {
+        banners.forEach((banner, index) => {
+          form.append("banners", banner);
+        });
+      }
+      if (products.length > 0) {
+        products.forEach((product, index) => {
+          form.append("products", product);
+        });
+      }
+      dispatch(createPage(form));
+      setShowCreatePageModal(false);
     }
-    if (products.length > 0) {
-      products.forEach((product, index) => {
-        form.append("products", product);
-      });
-    }
-    dispatch(createPage(form));
-    setShowCreatePageModal(false);
   };
 
   const hanldeBannerImages = (e) => {
@@ -162,30 +185,38 @@ const Page = () => {
   return (
     <Layout sidebar>
       <Container>
-        <Row>
-          <Col md={12}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <h3>Product Page</h3>
-              <div className="action-btn-container">
-                <span>Actions: </span>
-                <button onClick={handleShowCreatePageModal}>
-                  <MdAdd />
-                  <span>Add</span>
-                </button>
-                <button onClick={() => {}}>
-                  <MdEdit />
-                  <span>Edit</span>
-                </button>
-                <button onClick={() => {}}>
-                  <MdDelete />
-                  <span>Delete</span>
-                </button>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        {page.loading ? (
+          <Loading message={"Creating Page...Please wait"} />
+        ) : (
+          <>
+            <Row>
+              <Col md={12}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <h3>Page</h3>
+                  <div className="action-btn-container">
+                    <span>Actions: </span>
+                    <button onClick={handleShowCreatePageModal}>
+                      <MdAdd />
+                      <span>Add</span>
+                    </button>
+                    <button onClick={() => {}}>
+                      <MdEdit />
+                      <span>Edit</span>
+                    </button>
+                    <button onClick={() => {}}>
+                      <MdDelete />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            {renderCreatePageModal()}
+          </>
+        )}
       </Container>
-      {renderCreatePageModal()}
     </Layout>
   );
 };

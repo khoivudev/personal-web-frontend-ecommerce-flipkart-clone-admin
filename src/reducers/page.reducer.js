@@ -1,7 +1,9 @@
 import { pageTypes } from "../actions/types";
 
 const inititalState = {
+  error: null,
   loading: false,
+  page: {},
 };
 
 export default function (state = inititalState, action) {
@@ -14,12 +16,14 @@ export default function (state = inititalState, action) {
     case pageTypes.CREATE_PAGE_SUCCESS:
       return {
         ...state,
+        page: action.payload.page,
         loading: false,
       };
     case pageTypes.CREATE_PAGE_FAILURE:
       return {
         ...state,
         loading: false,
+        error: action.payload.error,
       };
     default:
       return state;
